@@ -8,6 +8,10 @@
 
 static const float PI = 3.14159265359;
 
+static float cameraX = 300.0;
+static float cameraY = 300.0;
+static float cameraScale = 5.0;
+
 DebugDraw::DebugDraw()
 {
 	glWindow = initWindow();
@@ -108,24 +112,34 @@ void keyRelease(int code)
 
 	switch(code)
 	{
+		case 24:	// Q
+		{
+			cameraScale *= 1.04;
+		}break;
+
 		case 25:	// W
 		{
+			cameraY -= 10.0;
+		}break;
 
+		case 26:	// E
+		{
+			cameraScale /= 1.04;
 		}break;
 
 		case 38:	// A
 		{
-
+			cameraX += 10.0;
 		}break;
 
 		case 39:	// S
 		{
-
+			cameraY += 10.0;
 		}break;
 
 		case 40:	// D
 		{
-
+			cameraX -= 10.0;
 		}break;
 
 		case 113:	// LEFT ARROW
@@ -157,14 +171,23 @@ void keyRelease(int code)
 	}
 }
 
-void DebugDraw::update(b2World* world)
+void DebugDraw::update(b2World* world, Sun* sun)
 {
 	int windowOpen;
 	windowOpen = processWindow(glWindow, mouseFunc, keyPress, keyRelease);
 
 	if(windowOpen)
 	{
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();
+
+		glTranslatef(cameraX, cameraY, 0);
+		glScalef(cameraScale, cameraScale, cameraScale);
+
 		drawWorld(world);
+		drawSun(sun);
+
 		showWindow(glWindow);
 	}
 
@@ -179,11 +202,11 @@ static void drawCircle(b2CircleShape* circle)
 
 		glTranslatef(center.x, center.y, 0.0);
 
-		glBegin(GL_LINE_LOOP);
+		glBegin(GL_LINE_STRIP);
 
 			int numSegments = 16;
 
-			for(int i=0; i<numSegments; i++)
+			for(int i=0; i<numSegments+1; i++)
 			{
 				float ang = 2*PI*float(i)/float(numSegments);
 				float x = radius*cos(ang);
@@ -192,7 +215,10 @@ static void drawCircle(b2CircleShape* circle)
 				glVertex2f( x, y);
 			}
 
+			glVertex2f( 0, 0);
+
 		glEnd();
+
 
 	glPopMatrix();
 
@@ -215,6 +241,22 @@ static void drawPolygon(b2PolygonShape* polygon)
 
 }
 
+static void drawChain(b2ChainShape* chain)
+{
+	glBegin(GL_LINES);
+
+	for (int i=0; i<chain->GetChildCount(); i++)
+	{
+		b2EdgeShape edge;
+		chain->GetChildEdge(&edge, i);
+
+		glVertex2f( edge.m_vertex1.x, edge.m_vertex1.y);
+		glVertex2f( edge.m_vertex2.x, edge.m_vertex2.y);
+	}
+
+	glEnd();
+}
+
 static void drawShape(b2Shape* shape)
 {
 	switch(shape->GetType())
@@ -227,6 +269,11 @@ static void drawShape(b2Shape* shape)
 		case b2Shape::e_polygon:
 		{
 			drawPolygon((b2PolygonShape*)shape);
+		}break;
+
+		case b2Shape::e_chain:
+		{
+			drawChain((b2ChainShape*)shape);
 		}break;
 
 		default:
@@ -253,8 +300,6 @@ static void drawBody(b2Body* body)
 		glTranslatef(bodyPos.x, bodyPos.y, 0.0);
 		glRotatef(bodyAngle * 180.0 / PI, 0, 0, 1.0);
 
-		printf("Body x:%f y:%f\n", bodyPos.x, bodyPos.y);
-
 		b2Fixture* fixtureNode = body->GetFixtureList();
 		while (fixtureNode)
 		{
@@ -269,13 +314,7 @@ static void drawBody(b2Body* body)
 
 void DebugDraw::drawWorld(b2World* world)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-
-	glTranslatef(300, 300, 0);
-	glScalef(10, 10, 10);
-
-	glColor3f( 0.0, 1.0, 0.0);
+	glColor3f( 0.0, 0.0, 0.0);
 	glLineWidth(1.0);
 
 	b2Body* node = world->GetBodyList();
@@ -287,4 +326,22 @@ void DebugDraw::drawWorld(b2World* world)
 		drawBody(b);
 	}
 
+}
+
+void DebugDraw::drawSun(Sun* sun)
+{
+	glColor3f( 1.0, 1.0, 0.4);
+	glLineWidth(1.0);
+
+	Sun::SunRay* rays = sun->getRays();
+
+	glBegin(GL_LINES);
+
+	for(int i=0; i<sun->getNumRays(); i++)
+	{
+		glVertex2f( rays[i].start.x, rays[i].start.y );
+		glVertex2f( rays[i].end.x, rays[i].end.y );
+	}
+
+	glEnd();
 }

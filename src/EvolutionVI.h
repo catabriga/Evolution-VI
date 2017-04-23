@@ -27,14 +27,20 @@ private:
 
 	b2Body* groundBody;
 
-	static const int MAX_NUM_CREATURES = 100;
+	static const int MAX_NUM_CREATURES = 1000;
 	int numCreatures;
 	Creature creatureList[MAX_NUM_CREATURES];
+
+	Sun sun;
 
 	DebugDraw debugDraw;
 
 	void initGroundBody(void);
 	void initCreatures(void);
+
+	void updateCreatures(void);
+
+	int getAvailableCreatureSpot(void);
 };
 
 #endif
