@@ -27,16 +27,6 @@ void DebugDraw::initGl(void)
 {
 	int zero = 0;
 	glutInit(&zero, NULL);
-
-	int width = 600;
-	int height = 600;
-
-	glViewport(0,0,width,height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,width,0,height,-1,1);
-	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void mouseFunc(int type, int button, int x, int y)
@@ -330,7 +320,7 @@ void DebugDraw::drawWorld(b2World* world)
 
 void DebugDraw::drawSun(Sun* sun)
 {
-	glColor3f( 1.0, 1.0, 0.4);
+	glColor3f( 1.0, 0.4, 0.4);
 	glLineWidth(1.0);
 
 	Sun::SunRay* rays = sun->getRays();

@@ -3,6 +3,8 @@
 
 #include "Box2D/Box2D.h"
 
+#include "CreaturePart.h"
+
 class Creature
 {
 
@@ -17,12 +19,17 @@ public:
 	void remove(b2World* world);
 
 	void update(void);
-	void shineLight(void);
 	bool isReadyToReproduce(void);
 	void reproduce(void);
+	void addEnergy(float dE);
+
+	b2Vec2 getPosition(void);
 
 private:
-	b2Body* body;
+
+	static const int MAX_NUM_PARTS = 10;
+	CreaturePart parts[MAX_NUM_PARTS];
+
 	bool alive;
 	bool removed;
 	bool readyToReproduce;

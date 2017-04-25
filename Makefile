@@ -15,13 +15,13 @@ TARGETDIR = bin
 all: $(SOURCES) $(TARGETDIR)/$(EXECUTABLE)
 debug: CC += -g
 debug: CXX += -g
-debug: directories $(SOURCES) $(EXECUTABLE)
+debug: $(SOURCES) $(TARGETDIR)/$(EXECUTABLE)
 release: CC += -O3
 release: CXX += -O3
-release: $(SOURCES) $(EXECUTABLE)
+release: $(SOURCES) $(TARGETDIR)/$(EXECUTABLE)
 prof: CC += -pg
 prof: CXX += -pg
-prof: $(SOURCES) $(EXECUTABLE)
+prof: $(SOURCES) $(TARGETDIR)/$(EXECUTABLE)
 
 $(TARGETDIR)/$(EXECUTABLE): $(OBJECTS)
 	@mkdir -p $(@D)

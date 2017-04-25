@@ -6,7 +6,6 @@ static const float PI = 3.14159265359;
 
 Creature::Creature(void)
 {
-	body = NULL;
 	alive = false;
 	removed = true;
 	readyToReproduce = false;
@@ -35,8 +34,10 @@ bool Creature::isReadyToReproduce(void)
 
 void Creature::remove(b2World* world)
 {
-	world->DestroyBody(body);
-	body = NULL;
+	for(int i=0; i<MAX_NUM_PARTS; i++)
+	{
+		parts[i].destroy(world);
+	}
 
 	removed = true;
 	alive = false;
@@ -45,23 +46,9 @@ void Creature::remove(b2World* world)
 
 void Creature::initialize(b2World* world)
 {
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set(0.0f, 10.0f);
-	bodyDef.angle = PI/3.0;
-	body = world->CreateBody(&bodyDef);
+	b2Vec2 pos(0.0f, 10.0f);
 
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(1.0f, 1.0f);
-
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 5.0f;
-	fixtureDef.restitution = 0.5f;
-	fixtureDef.userData = this;
-
-	body->CreateFixture(&fixtureDef);
+	parts[0].init(world, this, pos);
 
 	alive = true;
 	removed = false;
@@ -71,23 +58,9 @@ void Creature::initialize(b2World* world)
 
 void Creature::initialize(b2World* world, Creature* parent)
 {
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = parent->body->GetPosition();
-	bodyDef.angle = parent->body->GetAngle();
-	body = world->CreateBody(&bodyDef);
+	b2Vec2 pos = parent->getPosition();
 
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(1.0f, 1.0f);
-
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 5.0f;
-	fixtureDef.restitution = 0.5f;
-	fixtureDef.userData = this;
-
-	body->CreateFixture(&fixtureDef);
+	parts[0].init(world, this, pos);
 
 	alive = true;
 	removed = false;
@@ -110,12 +83,17 @@ void Creature::update(void)
 	}
 }
 
-void Creature::shineLight(void)
-{
-	energy += 0.2;
-}
-
 void Creature::reproduce(void)
 {
 	energy -= 500.0;
+}
+
+void Creature::addEnergy(float dE)
+{
+	energy += dE;
+}
+
+b2Vec2 Creature::getPosition(void)
+{
+	return parts[0].getPosition();
 }

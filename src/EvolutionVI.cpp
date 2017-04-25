@@ -1,16 +1,17 @@
 #include "EvolutionVI.h"
 
+#include "Sun.h"
+
 EvolutionVI::EvolutionVI(void) :
 	gravity(0.0f, -2.0f),
-	world(gravity)
+	world(gravity),
+	ground(&world)
 {
 	timeStep = 1.0f / 60.0f;
 	velocityIterations = 6;
 	positionIterations = 2;
 
 	numCreatures = 0;
-
-	groundBody = NULL;
 }
 
 EvolutionVI::~EvolutionVI(void)
@@ -18,31 +19,6 @@ EvolutionVI::~EvolutionVI(void)
 
 }
 
-void EvolutionVI::initGroundBody(void)
-{
-	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set(0.0f, -10.0f);
-
-	groundBody = world.CreateBody(&groundBodyDef);
-
-	//b2PolygonShape groundBox;
-	//groundBox.SetAsBox(50.0f, 10.0f);
-	//groundBody->CreateFixture(&groundBox, 0.0f);
-
-
-	b2Vec2 vs[6];
-	vs[0].Set(-50.0f, 50.0f);
-	vs[1].Set(-50.0f, 0.0f);
-	vs[2].Set(-25.0f, -25.0f);
-	vs[3].Set(25.0f, -25.0f);
-	vs[4].Set(50.0f, 0.0f);
-	vs[5].Set(50.0f, 50.0f);
-	b2ChainShape chain;
-	chain.CreateChain(vs, 6);
-
-	groundBody->CreateFixture(&chain, 0.0f);
-
-}
 
 void EvolutionVI::initCreatures(void)
 {
@@ -106,7 +82,6 @@ void EvolutionVI::updateCreatures(void)
 
 void EvolutionVI::run(void)
 {
-	initGroundBody();
 	initCreatures();
 
 	int i =0;

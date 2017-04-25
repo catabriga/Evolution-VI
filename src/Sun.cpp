@@ -1,7 +1,7 @@
 #include "Sun.h"
 
 #include "LightRayCallback.h"
-#include "Creature.h"
+#include "WorldObject.h"
 
 static const float PI = 3.14159265359;
 
@@ -54,6 +54,7 @@ void Sun::castSunRays(b2World* world)
 		float endY = sunPos.y + sin(ang)*rayLength;
 
 		b2Vec2 endPoint(endX, endY);
+		lightRayCallback.m_point = endPoint;
 
 		world->RayCast(&lightRayCallback, sunPos, endPoint);
 
@@ -64,11 +65,11 @@ void Sun::castSunRays(b2World* world)
 
 		if(fixture != NULL)
 		{
-			Creature* creature = (Creature*)fixture->GetUserData();
+			WorldObject* wo = (WorldObject*)fixture->GetUserData();
 
-			if(creature != NULL)
+			//if(wo != NULL)
 			{
-				creature->shineLight();
+				wo->shineLight();
 			}
 		}
 	}

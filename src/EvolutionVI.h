@@ -4,6 +4,7 @@
 
 #include "Box2D/Box2D.h"
 
+#include "Ground.h"
 #include "Creature.h"
 #include "DebugDraw.h"
 
@@ -25,7 +26,7 @@ private:
 	int32 velocityIterations;
 	int32 positionIterations;
 
-	b2Body* groundBody;
+	Ground ground;
 
 	static const int MAX_NUM_CREATURES = 1000;
 	int numCreatures;

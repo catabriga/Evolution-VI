@@ -71,6 +71,11 @@ int processWindow(window* w, void (*mouseFunc)(int type, int button, int x, int 
 			case ConfigureNotify:
 			{
 				glViewport( 0, 0, event.xconfigure.width, event.xconfigure.height );
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(0,event.xconfigure.width,0,event.xconfigure.height,-1,1);
+				glMatrixMode(GL_MODELVIEW);
+
 			}break;
 
 			case DestroyNotify:
