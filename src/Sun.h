@@ -23,7 +23,7 @@ public:
 	SunRay* getRays(void);
 
 private:
-	static const int NUM_SUN_RAYS = 100;
+	static const int NUM_SUN_RAYS = 250;
 	SunRay rays[NUM_SUN_RAYS];
 
 };

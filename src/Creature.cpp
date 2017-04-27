@@ -2,8 +2,6 @@
 
 #include "Creature.h"
 
-static const float PI = 3.14159265359;
-
 Creature::Creature(void)
 {
 	alive = false;
@@ -34,7 +32,7 @@ bool Creature::isReadyToReproduce(void)
 
 void Creature::remove(b2World* world)
 {
-	for(int i=0; i<MAX_NUM_PARTS; i++)
+	for(uint32_t i=0; i<MAX_NUM_PARTS; i++)
 	{
 		parts[i].destroy(world);
 	}
@@ -48,7 +46,9 @@ void Creature::initialize(b2World* world)
 {
 	b2Vec2 pos(0.0f, 10.0f);
 
-	parts[0].init(world, this, pos);
+	geneticCode.initFromString("003340338033");
+
+	initializePartsFromGeneticCode(world, pos);
 
 	alive = true;
 	removed = false;
@@ -60,12 +60,26 @@ void Creature::initialize(b2World* world, Creature* parent)
 {
 	b2Vec2 pos = parent->getPosition();
 
-	parts[0].init(world, this, pos);
+	geneticCode.initFromParent(&(parent->geneticCode));
+
+	initializePartsFromGeneticCode(world, pos);
 
 	alive = true;
 	removed = false;
 	readyToReproduce = false;
 	energy = 100.0;
+}
+
+void Creature::initializePartsFromGeneticCode(b2World* world, b2Vec2 pos)
+{
+	uint8_t partCode[6];
+
+	for(uint32_t i=0; i<6; i++)
+	{
+		partCode[i] = geneticCode.readGene(i);
+	}
+
+	parts[0].init(world, this, pos, partCode);
 }
 
 void Creature::update(void)
@@ -86,6 +100,7 @@ void Creature::update(void)
 void Creature::reproduce(void)
 {
 	energy -= 500.0;
+	readyToReproduce = false;
 }
 
 void Creature::addEnergy(float dE)

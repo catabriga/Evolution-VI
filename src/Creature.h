@@ -1,9 +1,12 @@
 #ifndef SRC_CREATURE_H_
 #define SRC_CREATURE_H_
 
+#include <stdint.h>
+
 #include "Box2D/Box2D.h"
 
 #include "CreaturePart.h"
+#include "GeneticCode.h"
 
 class Creature
 {
@@ -27,13 +30,17 @@ public:
 
 private:
 
-	static const int MAX_NUM_PARTS = 10;
+	static const uint32_t MAX_NUM_PARTS = 10;
 	CreaturePart parts[MAX_NUM_PARTS];
+
+	GeneticCode geneticCode;
 
 	bool alive;
 	bool removed;
 	bool readyToReproduce;
 	float energy;
+
+	void initializePartsFromGeneticCode(b2World* world, b2Vec2 pos);
 };
 
 #endif

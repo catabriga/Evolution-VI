@@ -16,7 +16,7 @@ public:
 	CreaturePart(void);
 	virtual ~CreaturePart(void);
 
-	void init(b2World* world, Creature* ownerCreature, b2Vec2 position);
+	void init(b2World* world, Creature* ownerCreature, b2Vec2 position, uint8_t* params);
 	void destroy(b2World* world);
 
 	b2Vec2 getPosition(void);

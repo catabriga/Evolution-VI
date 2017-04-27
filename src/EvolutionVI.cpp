@@ -22,7 +22,7 @@ EvolutionVI::~EvolutionVI(void)
 
 void EvolutionVI::initCreatures(void)
 {
-	for(int i=0; i<50; i++)
+	for(uint32_t i=0; i<1; i++)
 	{
 		creatureList[numCreatures].initialize(&world);
 		numCreatures++;
@@ -31,7 +31,7 @@ void EvolutionVI::initCreatures(void)
 
 int EvolutionVI::getAvailableCreatureSpot(void)
 {
-	for(int i=0; i<MAX_NUM_CREATURES; i++)
+	for(uint32_t i=0; i<MAX_NUM_CREATURES; i++)
 	{
 		Creature* creature = &(creatureList[i]);
 
@@ -46,7 +46,7 @@ int EvolutionVI::getAvailableCreatureSpot(void)
 
 void EvolutionVI::updateCreatures(void)
 {
-	for(int i=0; i<MAX_NUM_CREATURES; i++)
+	for(uint32_t i=0; i<MAX_NUM_CREATURES; i++)
 	{
 		Creature* creature = &(creatureList[i]);
 
@@ -84,7 +84,7 @@ void EvolutionVI::run(void)
 {
 	initCreatures();
 
-	int i =0;
+	uint32_t i =0;
 
 	while(true)
 	{
